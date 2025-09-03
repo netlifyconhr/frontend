@@ -1,0 +1,32 @@
+export const RELEASE_LETTER_EMPLYEES = [
+  {
+    employeeName: "Mala Gharami",
+    employeeEmail: "mail2malagharami@gmail.com",
+    employeeGender: "Female",
+    employeeAddress: "123 Main Street, Delhi",
+    employeeDesignation: "CCE",
+    employeeDateOfJoin: "12 January 2025",
+    employeeDateOfResign: "17 June 2025",
+    emailSubject: "Relieving Confirmation",
+  },
+  {
+    employeeName: "Subhojit Naiya",
+    employeeEmail: "subhojitnaiya98@gmail.com",
+    employeeGender: "Male",
+    employeeAddress: "55B Park Lane, Mumbai",
+    employeeDesignation: "CCE",
+    employeeDateOfJoin: "05 March 2025",
+    employeeDateOfResign: "30 June 2025",
+    emailSubject: "Official Exit Communication",
+  },
+  {
+    employeeName: "Joy Das",
+    employeeEmail: "jay.chandra@woodrockgroup.in",
+    employeeGender: "Male",
+    employeeAddress: "55B Park Lane, Mumbai",
+    employeeDesignation: "CCE",
+    employeeDateOfJoin: "05 March 2025",
+    employeeDateOfResign: "20 March 2026",
+    emailSubject: "Official Exit Communication",
+  },
+];
