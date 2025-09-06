@@ -5,8 +5,7 @@ export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   signal?: AbortSignal;
   token?: string;
 }
-export const API_BASE_URL: string = https://api.netlifycon-hr.in/api/v1;
-
+export const API_BASE_URL: string = "https://api.netlifycon-hr.in/api/v1";
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 60000,
