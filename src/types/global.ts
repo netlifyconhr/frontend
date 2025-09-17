@@ -1,3 +1,5 @@
+import type { Row } from "@tanstack/react-table";
+
 export type TError = {
   data: {
     message: string;
@@ -28,3 +30,7 @@ export type TQueryParam = {
   name: string;
   value: boolean | React.Key;
 };
+export interface DataTableRowAction<TData> {
+  row: Row<TData>;
+  variant: "update" | "delete" | "UPLOAD";
+}

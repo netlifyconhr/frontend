@@ -11,8 +11,9 @@ const TableHead = <T,>({ table }: TableHeadProps<T>) => {
         <tr key={headerGroup.id} className="text-xs">
           {headerGroup.headers.map((header) => (
             <th
+              data-actionColumn={header.id === "ACTION"}
               key={header.id}
-              className="px-6  py-3 text-left text-xs font-light md:font-medium text-gray-500 uppercase tracking-wider"
+              className="px-6 data-[actionColumn=true]:w-0.5 py-3 text-left text-xs font-light md:font-medium text-gray-500 uppercase tracking-wider"
             >
               {header.isPlaceholder
                 ? null

@@ -17,6 +17,8 @@ import ExcelUploadWizard from "../(dashboard)/offerletter/pages/OfferLetterUploa
 import PayslipLetterUploadPage from "../(dashboard)/payslip/pages/PayslipLetterUploadPage";
 import ReleaseLetterUploadPage from "../(dashboard)/release/pages/ReleaseLetterUploadPage";
 import ExperienceLetterUploadPage from "../(dashboard)/experience/pages/ExperienceLetterUploadPage";
+import BackgroundVarificationPage from "../(dashboard)/background-varification/pages/background-varification-page";
+import BackgroundVarificationUpload from "../(dashboard)/background-varification/pages/background-varification-upload";
 
 export const DashboardRoutes = [
   {
@@ -58,8 +60,18 @@ export const DashboardRoutes = [
     // children: PayslipRoutes,
   },
   {
+    path: "background-check",
+    element: <BackgroundVarificationPage />,
+    // children: PayslipRoutes,
+  },
+  {
     path: "experience-letter-upload",
     element: <ExperienceLetterUploadPage />,
+    // children: PayslipRoutes,
+  },
+  {
+    path: "background-check-upload",
+    element: <BackgroundVarificationUpload />,
     // children: PayslipRoutes,
   },
   {

@@ -5,12 +5,11 @@ export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   signal?: AbortSignal;
   token?: string;
 }
-export const API_BASE_URL: string = "https://api.netlifycon-hr.in/api/v1";
+export const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || "";
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 60000,
 });
-
 
 const controllers = new Map<string, AbortController>();
 

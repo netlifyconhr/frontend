@@ -88,11 +88,11 @@ const data = {
       url: "#",
       items: [
         {
-    title: "Background KYC Check",
-    url: "/dashboard/background-check",
-    icon: ShieldCheck,
-    isBlocked: true,
-  },
+          title: "Background KYC Check",
+          url: "/dashboard/background-check",
+          icon: ShieldCheck,
+          // isBlocked: true,
+        },
         {
           url: "/dashboard/offer-letter",
           isBlocked: false,
@@ -160,8 +160,6 @@ const data = {
       ],
     },
 
-
-    
     {
       url: "attendance",
       title: "Attendance",
