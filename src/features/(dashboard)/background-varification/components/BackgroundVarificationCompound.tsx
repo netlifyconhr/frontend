@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CustomTable from "@/components/ui/CustomTable";
 import { Label } from "@/components/ui/label";
 import PaginationControls from "@/components/ui/Pagination";
@@ -9,14 +10,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TableHead from "@/components/ui/TableHead";
-import { X } from "lucide-react";
-import React from "react";
+import { Copy, CopyCheck, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReleaseLetterContext } from "../context";
 import { OfferLetterProvider } from "../context/releaseLetterContext";
-import ReleaseLetterAction from "./ReleaseLetterAction";
 import BackgroundVarificationHeader from "./BackgroundVarificationHeader";
+import ReleaseLetterAction from "./ReleaseLetterAction";
 import ReleaseLetterListLoader from "./ReleaseLetterListLoader";
 import UploadVarifyDocuments from "./UploadVarifyDocuments";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import axiosInstance from "@/lib/axios-instance";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const ReleaseLetterRoot: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -29,8 +43,30 @@ const Header: React.FC = () => {
 };
 
 const Body: React.FC = () => {
-  const { table, meta, loading, pageSize } = useReleaseLetterContext();
+  const { table, meta, loading, pageSize, rowAction, setRowAction } =
+    useReleaseLetterContext();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { data } = useQuery({
+    queryKey: ["BG", searchParams.get("generate")],
+    queryFn: () => {
+      return axiosInstance.post(
+        `/generated-link/generate-background-verification-url/${searchParams.get(
+          "generate"
+        )}`
+      );
+    },
+    enabled: !!searchParams.get("generate"),
+  });
+  console.log(data, "link");
 
+  useEffect(() => {
+    if (rowAction?.variant === "SELECT") {
+      searchParams.set("generate", rowAction?.row?.original?._id);
+    } else {
+      searchParams.delete("generate");
+    }
+    setSearchParams(searchParams, { replace: true });
+  }, [rowAction]);
   return (
     <>
       <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 overflow-hidden">
@@ -97,11 +133,104 @@ const Body: React.FC = () => {
           </div>
         </div>
       </div>
-      <UploadVarifyDocuments />
+      <UploadVarifyDocuments
+        rowAction={rowAction}
+        setRowAction={setRowAction}
+      />
+
+      <Dialog
+        open={!!searchParams.get("generate")}
+        onOpenChange={() => {
+          searchParams.delete("generate");
+          setSearchParams(searchParams, { replace: true });
+        }}
+      >
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>
+              <h1 className="text-lg md:text-xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent text-center md:text-left">
+                Share This Link
+              </h1>
+            </DialogTitle>
+          </DialogHeader>
+
+          <Clipboard />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
+export default function Clipboard() {
+  const inputRef = useRef<HTMLInputElement>(null); // ✅ Properly typed
+  const [copySuccess, setCopySuccess] = useState<string>("");
+
+  const copyToClipboard = () => {
+    const inputEl = inputRef.current;
+    if (inputEl) {
+      inputEl.select(); // ✅ 'select' exists on HTMLInputElement
+      document.execCommand("copy");
+      setCopySuccess("Copied!");
+      setTimeout(() => setCopySuccess(""), 2000);
+    }
+  };
+  const location = useLocation();
+
+  // This will give you the URLSearchParams object
+  const queryParams = new URLSearchParams(location.search);
+
+  // Get the `generate` parameter from the URL
+  const generateId = queryParams.get("generate");
+
+  return (
+    <section className="bg-gradient-to-br rounded-xl from-purple-600 via-pink-500 to-orange-400 py-8  flex items-center justify-center ">
+      <div className="  w-full mx-6 ">
+        <div className="relative group">
+          <input
+            type="text"
+            ref={inputRef}
+            value={`https://docs.netlifycon-hr.in?userId=${generateId}`}
+            readOnly
+            className="h-14 w-full rounded-xl border-2 border-white/30 bg-white/20 backdrop-blur-sm py-4 pl-6 pr-20 text-white placeholder-white/70 outline-none duration-300 selection:bg-white/30 focus:border-white/60 focus:bg-white/30 focus:shadow-lg text-lg font-medium"
+          />
+
+          <button
+            onClick={copyToClipboard}
+            className={`absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-white duration-300 transform transition-all ${
+              copySuccess
+                ? "bg-green-500 shadow-green-500/50 shadow-lg scale-105"
+                : "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105"
+            }`}
+          >
+            <span className="flex items-center">
+              {copySuccess ? <CopyCheck /> : <Copy />}
+            </span>
+            {copySuccess ? "Copied!" : "Copy"}
+          </button>
+        </div>
+
+        {copySuccess && (
+          <div className="mt-4 p-3 bg-green-500/20 border border-green-400/30 rounded-lg text-center">
+            <p className="text-green-200 text-sm font-medium animate-pulse">
+              ✨ Link copied to clipboard! ✨
+            </p>
+          </div>
+        )}
+
+        <div className="mt-6 text-center">
+          <p className="text-white/80 text-sm">
+            Share this link with anyone to give them access
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
 const Footer: React.FC = () => {
   const { table, selectedRows = [] } = useReleaseLetterContext();
   return (

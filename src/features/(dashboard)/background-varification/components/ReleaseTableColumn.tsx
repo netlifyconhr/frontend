@@ -1,7 +1,7 @@
 import { AnimatedCheckbox } from "@/components/ui/AnimatedCheckbox";
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Send } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import type { IOfferLetter } from "../types";
 
 import {
@@ -20,26 +20,20 @@ export const BackgroundVarificationTableColumns = (
   >
 ): ColumnDef<IOfferLetter>[] => [
   {
-    id: "select",
-    header: ({ table }) => (
-      <AnimatedCheckbox
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-      />
-    ),
-    cell: ({ row }) => (
-      <AnimatedCheckbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
-  {
     accessorKey: "employeeName",
     header: "Name",
+  },
+  {
+    accessorKey: "employeeId",
+    header: "Employee Code",
+  },
+  {
+    accessorKey: "contactNumber",
+    header: "Number",
+  },
+  {
+    accessorKey: "employeeEmail",
+    header: "Email",
   },
   {
     accessorKey: "status",
@@ -75,12 +69,10 @@ export const BackgroundVarificationTableColumns = (
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuItem
-              disabled
               className="cursor-pointer underline"
-              // onClick={() => {
-              //   setSelectedOffer(offer);
-              //   setDetailsOpen(true);
-              // }}
+              onClick={() => {
+                setRowAction({ row: row, variant: "SELECT" });
+              }}
             >
               Send link for upload documents
             </DropdownMenuItem>
@@ -91,10 +83,6 @@ export const BackgroundVarificationTableColumns = (
               }}
             >
               Upload Document files
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled>
-              Resend Email
-              <Send />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

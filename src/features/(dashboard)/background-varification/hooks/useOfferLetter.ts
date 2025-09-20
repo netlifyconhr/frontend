@@ -122,6 +122,7 @@ export default function useOfferLetter() {
     () => BackgroundVarificationTableColumns(setRowAction),
     []
   );
+
   const table = useReactTable({
     data: sentEmails ?? [],
     columns,
@@ -198,5 +199,7 @@ export default function useOfferLetter() {
     selectedOffer,
     setPageSize,
     sentEmails,
+    rowAction,
+    setRowAction,
   };
 }

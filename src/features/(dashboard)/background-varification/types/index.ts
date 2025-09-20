@@ -46,5 +46,10 @@ export interface IOfferLetter {
   status: offerLetterStatus;
   generateByUser: string;
   createdAt: string;
+
+  pan?: string;
+  aadhar?: string;
+  voter?: string;
+  photo?: string;
   _id: string;
 }
