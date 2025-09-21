@@ -34,6 +34,7 @@ export function NavMain({
       title: string;
       url: string;
       isBlocked?: boolean;
+      roles?: Array<string>;
     }[];
   }[];
 }) {

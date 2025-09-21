@@ -32,5 +32,5 @@ export type TQueryParam = {
 };
 export interface DataTableRowAction<TData> {
   row: Row<TData>;
-  variant: "update" | "delete" | "UPLOAD" | "SELECT";
+  variant: "update" | "delete" | "UPLOAD" | "SELECT" | "SIDEBAR";
 }

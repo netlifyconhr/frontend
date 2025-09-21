@@ -249,14 +249,12 @@ const BackgroundVarificationUpload: React.FC = () => {
                     </div>
                     <div className="flex items-center">
                       <Users className="w-5 h-5 text-green-500 mr-3" />
-                      <span className="text-gray-700">
-                        Offer letter information data
-                      </span>
+                      <span className="text-gray-700">Verification data</span>
                     </div>
                     <div className="flex items-center">
                       <AlertCircle className="w-5 h-5 text-yellow-500 mr-3" />
                       <span className="text-gray-700">
-                        Maximum file size: 10MB
+                        Maximum file size: 3MB
                       </span>
                     </div>
                   </div>

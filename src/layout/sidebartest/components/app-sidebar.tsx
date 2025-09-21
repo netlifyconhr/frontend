@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMain } from "../components/nav-main";
 import { TeamSwitcher } from "../components/team-switcher";
+import { UserRole } from "@/interface/user";
 
 // This is sample data.
 const data = {
@@ -91,7 +92,7 @@ const data = {
           title: "Background KYC Check",
           url: "/dashboard/background-check",
           icon: ShieldCheck,
-          // isBlocked: true,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
         },
         {
           url: "/dashboard/offer-letter",

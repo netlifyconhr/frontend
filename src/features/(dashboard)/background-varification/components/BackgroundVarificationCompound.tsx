@@ -31,6 +31,7 @@ import {
 import axiosInstance from "@/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
+import SideUserInfoSheet from "./SideUserInfoSheet";
 
 const ReleaseLetterRoot: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -162,6 +163,13 @@ const Body: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <SideUserInfoSheet
+        open={rowAction?.variant === "SIDEBAR"}
+        handleChange={() => {
+          setRowAction(null);
+        }}
+        userInfo={rowAction?.row?.original}
+      />
     </>
   );
 };

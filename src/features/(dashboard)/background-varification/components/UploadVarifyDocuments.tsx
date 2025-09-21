@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import FileUploader from "./FileUploader";
 // Define document ID types
 type DocumentId = "pan" | "aadhar" | "voter" | "photo";
 
@@ -49,6 +50,9 @@ export default function UploadVerifyDocuments({
     {}
   );
   const [dragOver, setDragOver] = useState<DocumentId | null>(null);
+  const [uploadingDocs, setUploadingDocs] = useState<Set<DocumentId>>(
+    new Set()
+  );
   const fileInputRefs = useRef<
     Partial<Record<DocumentId, HTMLInputElement | null>>
   >({});
@@ -114,19 +118,18 @@ export default function UploadVerifyDocuments({
     setDragOver(null);
   };
 
-  const { mutate: uploadDocuments, isPending: uploading } = useMutation({
-    mutationFn: (filesMap: Partial<Record<DocumentId, UploadedFile>>) => {
+  // Individual upload function for each document
+  const uploadDocument = async (
+    docId: DocumentId,
+    uploadedFile: UploadedFile
+  ) => {
+    setUploadingDocs((prev) => new Set([...prev, docId]));
+
+    try {
       const formData = new FormData();
+      formData.append(docId, uploadedFile.file);
 
-      (Object.entries(filesMap) as [DocumentId, UploadedFile][]).forEach(
-        ([docId, uploadedFile]) => {
-          if (uploadedFile?.file) {
-            formData.append(docId, uploadedFile.file); // field name = "pan", "aadhar", etc.
-          }
-        }
-      );
-
-      return axiosInstance.post(
+      await axiosInstance.post(
         `/background-varification/upload-required-documents/${rowAction?.row?.original?._id}`,
         formData,
         {
@@ -135,16 +138,33 @@ export default function UploadVerifyDocuments({
           },
         }
       );
-    },
-  });
-  const handleSubmit = () => {
-    if (Object.keys(files).length === 4) {
-      uploadDocuments(files);
-    } else {
-      toast.error("Please upload all documents.");
+
+      toast.success(
+        `${
+          documents.find((doc) => doc.id === docId)?.label
+        } uploaded successfully!`
+      );
+    } catch (error) {
+      toast.error(
+        `Failed to upload ${documents.find((doc) => doc.id === docId)?.label}`
+      );
+      // Remove the file from state on error
+      removeFile(docId);
+    } finally {
+      setUploadingDocs((prev) => {
+        const updated = new Set(prev);
+        updated.delete(docId);
+        return updated;
+      });
     }
   };
-  const validFilesCount = Object.keys(files).length;
+
+  const handleManualUpload = (docId: DocumentId) => {
+    const file = files[docId];
+    if (file) {
+      uploadDocument(docId, file);
+    }
+  };
 
   return (
     <AlertDialog
@@ -153,154 +173,95 @@ export default function UploadVerifyDocuments({
         setRowAction(null);
       }}
     >
-      <AlertDialogContent className="sm:max-w-[700px]  flex flex-col">
+      <AlertDialogContent className="w-[900px] flex flex-col">
         <AlertDialogHeader>
           <AlertDialogTitle>Upload & Verify Documents</AlertDialogTitle>
-          <AlertDialogDescription>
-            Upload for {rowAction?.row?.original?.employeeName} verification
-            documents. Accepted formats: PDF, PNG, JPG, DOCX (max 5MB each)
-          </AlertDialogDescription>
         </AlertDialogHeader>
-        <div className="w-full mx-auto p-6">
-          {/* Compact List View */}
-          <div className="space-y-4">
-            {documents.map((doc, index) => {
-              const file = files[doc.id]; // File just uploaded in this session
-              const IconComponent = doc.icon;
-              const isUploaded = !!file;
-
-              const existingFileUrl = rowAction?.row?.original?.[doc?.id];
-              const isAlredayUpload = !!existingFileUrl;
-              const isDragging = dragOver === doc.id;
-
-              return (
-                <div
-                  key={doc.id}
-                  className={`border-2 rounded-lg p-4 transition-all ${
-                    isDragging
-                      ? "border-blue-400 bg-blue-50"
-                      : isUploaded || isAlredayUpload
-                      ? `border-${doc.color}-200 bg-${doc.color}-50`
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                  onDrop={(e) => !isAlredayUpload && handleDrop(e, doc.id)}
-                  onDragOver={(e) =>
-                    !isAlredayUpload && handleDragOver(e, doc.id)
-                  }
-                  onDragLeave={handleDragLeave}
+        <div className="flex gap-2">
+          <div className="bg-amber-50 border-l-4 border-amber-400 p-2  rounded-r-lg">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg
+                  className="w-6 h-6 text-amber-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`p-2 rounded-lg ${
-                          isUploaded || isAlredayUpload
-                            ? `bg-${doc.color}-100`
-                            : "bg-gray-100"
-                        }`}
-                      >
-                        <IconComponent
-                          className={`h-6 w-6 ${
-                            isUploaded || isAlredayUpload
-                              ? `text-${doc.color}-600`
-                              : "text-gray-500"
-                          }`}
-                        />
-                      </div>
+                  <path
+                    fillRule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="">
+                <h3 className="text-lg font-semibold text-amber-800 mb-3">
+                  Important Guidelines
+                </h3>
+                <ul className="text-amber-700 space-y-2">
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                    Upload only <strong>PNG or JPG</strong> image files (PDF not
+                    supported)
+                  </li>
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                    Maximum file size: <strong>1MB per file</strong>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                    Experience documents can be:
+                    <strong>
+                      Release letter, Experience letter, Offer letter, or
+                      Payslip
+                    </strong>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="w-full mx-auto p-6 space-y-3">
+            {/* Compact List View */}
 
-                      <div>
-                        <h3 className="font-medium text-gray-900">
-                          {doc.label}
-                          {index < 2 && (
-                            <span className="text-red-500"> *</span>
-                          )}
-                        </h3>
-
-                        {isUploaded || isAlredayUpload ? (
-                          <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <span>{file?.name || `${doc.id}.png`}</span>
-                            {file?.size && (
-                              <>
-                                <span>•</span>
-                                <span>{file.size}</span>
-                              </>
-                            )}
-                            <Check className="h-4 w-4 text-green-600" />
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">
-                            Click to upload or drag & drop
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      {/* Show preview only for image types */}
-                      {(file?.preview || existingFileUrl) && (
-                        <img
-                          src={file?.preview || existingFileUrl}
-                          alt="Preview"
-                          className="h-12 w-12 object-cover rounded border"
-                        />
-                      )}
-
-                      {!isAlredayUpload && isUploaded && (
-                        <button
-                          onClick={() => removeFile(doc.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-
-                      {!isAlredayUpload && !isUploaded && (
-                        <button
-                          onClick={() => fileInputRefs.current[doc.id]?.click()}
-                          className={`px-4 py-2 text-${doc.color}-600 border border-${doc.color}-600 rounded-lg hover:bg-${doc.color}-50 transition-colors text-sm font-medium`}
-                        >
-                          Upload
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* File input only if not already uploaded */}
-                  {!isAlredayUpload && (
-                    <input
-                      ref={(el) => {
-                        fileInputRefs.current[doc.id] = el;
-                      }}
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.pdf,.docx"
-                      onChange={(e) => handleFile(doc.id, e.target.files?.[0])}
-                      className="hidden"
-                    />
-                  )}
-                </div>
-              );
-            })}
+            <FileUploader
+              userId={rowAction?.row?.original?._id as string}
+              fileName="pan"
+              key="pan"
+              title="PAN Card"
+              uploadedUrl={rowAction?.row?.original?.pan}
+            />
+            <FileUploader
+              userId={rowAction?.row?.original?._id as string}
+              fileName="aadharFront"
+              key="aadharFront"
+              title="Adhar Front"
+              uploadedUrl={rowAction?.row?.original?.aadharFront}
+            />
+            <FileUploader
+              userId={rowAction?.row?.original?._id as string}
+              title="Adhar Back"
+              fileName="aadharBack"
+              key="aadharBack"
+              uploadedUrl={rowAction?.row?.original?.aadharBack}
+            />
+            <FileUploader
+              userId={rowAction?.row?.original?._id as string}
+              fileName="education"
+              key="education"
+              title="Last education certificate"
+              uploadedUrl={rowAction?.row?.original?.education}
+            />
+            <FileUploader
+              userId={rowAction?.row?.original?._id as string}
+              fileName="experience"
+              key="experience"
+              title="Last experience"
+              uploadedUrl={rowAction?.row?.original?.experience}
+            />
           </div>
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button
-            variant="outline"
-            onClick={() =>
-              Object.keys(files).forEach((key) => removeFile(key as DocumentId))
-            }
-            disabled={validFilesCount === 0}
-          >
-            Clear All
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleSubmit}
-            disabled={uploading || !!rowAction?.row?.original?.pan}
-            className="gap-2"
-          >
-            Submits ({rowAction?.row?.original?.pan ? 4 : validFilesCount}/4)
-          </Button>
+          <AlertDialogCancel>Close</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
