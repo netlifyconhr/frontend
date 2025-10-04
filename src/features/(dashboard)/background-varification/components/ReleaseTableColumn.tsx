@@ -20,6 +20,74 @@ import { Badge } from "@/layout/sidebartest/components/ui/badge";
 import { getStatusColor } from "@/lib/utils";
 import type { DataTableRowAction } from "@/types";
 
+
+
+import {  TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Clock } from "lucide-react";
+import { type ReactNode } from "react";
+
+type StatusType = "Verified" | "Pending" | "Warning" | string;
+
+interface StatusBadgeProps {
+  label: string;
+  status: StatusType;
+  showTooltip?: boolean;
+  tooltipContent?: ReactNode;
+}
+
+const getStatusConfig = (status: StatusType) => {
+  if (!status || status === "Pending") {
+    return {
+      variant: "outline" as const,
+      icon: Clock,
+    };
+  }
+  
+  if (status === "Verified") {
+    return {
+      variant: "success" as const,
+      icon: ShieldCheck,
+    };
+  }
+  
+  // Warning or any other status
+  return {
+    variant: "destructive" as const,
+    icon: ShieldAlert,
+  };
+};
+
+export const StatusBadge = ({ 
+  label, 
+  status, 
+  showTooltip = false,
+  tooltipContent 
+}: StatusBadgeProps) => {
+  const { variant, icon: Icon } = getStatusConfig(status);
+
+  const badge = (
+    <Badge variant={variant} className="flex gap-1 items-center">
+      {label} <Icon size={12} />
+    </Badge>
+  );
+
+  if (showTooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {badge}
+        </TooltipTrigger>
+        {tooltipContent && (
+          <TooltipContent>
+            {tooltipContent}
+          </TooltipContent>
+        )}
+      </Tooltip>
+    );
+  }
+
+  return badge;
+};
 export const BackgroundVarificationTableColumns = (
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<IOfferLetter> | null>
@@ -54,28 +122,43 @@ export const BackgroundVarificationTableColumns = (
   {
     accessorKey: "remarks",
     header: "Remarks",
-    cell: () => <p className="text-green-700">Good</p>,
+    // cell: () => <p className="text-green-700">Good</p>,
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: () => (
-      <>
+    cell: ({row}) => {
+
+     
+    return  <>
         <div className="flex flex-wrap w-46 gap-1">
-          <Badge variant="outline">Adhar</Badge>
-          <Tooltip>
-            <Badge variant="destructive" className="flex gap-1 items-center">
-              Pan
-              <ShieldAlert size={12} />
-            </Badge>
-          </Tooltip>
-          <Badge variant="success" className="flex gap-1 items-center">
-            Education <ShieldCheck size={12} />
-          </Badge>
-          <Badge variant="outline">Experience</Badge>
+          <StatusBadge 
+          label="Pan" 
+          status={row?.original?.panStatus}
+          showTooltip
+          tooltipContent={`PAN Status: ${row?.original?.panStatus||'Pending'}`}
+        />
+        <StatusBadge 
+          label="Education" 
+          status={row?.original?.educationStatus}
+           showTooltip
+          tooltipContent={`educationStatus Status: ${row?.original?.educationStatus||'Pending'}`}
+        />
+        <StatusBadge 
+          label="Aadhar" 
+          status={row?.original?.adharStatus}
+           showTooltip
+          tooltipContent={`Aadhar Status: ${row?.original?.adharStatus||'Pending'}`}
+        />
+        <StatusBadge 
+          label="Experience" 
+          status={row?.original?.experienceStatus}
+           showTooltip
+          tooltipContent={`Experience Status: ${row?.original?.experienceStatus||'Pending'}`}
+        />
         </div>
       </>
-    ),
+  },
   },
 
   {
