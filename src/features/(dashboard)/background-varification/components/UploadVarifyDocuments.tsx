@@ -1,20 +1,13 @@
-import { Button } from "@/components/ui/button";
-import axiosInstance from "@/lib/axios-instance";
 import type { DataTableRowAction } from "@/types";
-import { useMutation } from "@tanstack/react-query";
-import { Check, FileText, Image, X } from "lucide-react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
 import type { IOfferLetter } from "../types";
 
 import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import FileUploader from "./FileUploader";
 // Define document ID types
@@ -46,125 +39,6 @@ export default function UploadVerifyDocuments({
     React.SetStateAction<DataTableRowAction<IOfferLetter> | null>
   >;
 }) {
-  const [files, setFiles] = useState<Partial<Record<DocumentId, UploadedFile>>>(
-    {}
-  );
-  const [dragOver, setDragOver] = useState<DocumentId | null>(null);
-  const [uploadingDocs, setUploadingDocs] = useState<Set<DocumentId>>(
-    new Set()
-  );
-  const fileInputRefs = useRef<
-    Partial<Record<DocumentId, HTMLInputElement | null>>
-  >({});
-
-  const documents: DocumentType[] = [
-    { id: "pan", label: "PAN Card", icon: FileText, color: "blue" },
-    { id: "aadhar", label: "Aadhar Card", icon: FileText, color: "green" },
-    { id: "voter", label: "Voter ID", icon: FileText, color: "purple" },
-    { id: "photo", label: "Photo", icon: Image, color: "orange" },
-  ];
-
-  const handleFile = (docId: DocumentId, file?: File) => {
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File too large. Max 5MB allowed.");
-      return;
-    }
-
-    const fileData: UploadedFile = {
-      file,
-      name: file.name,
-      size: (file.size / 1024).toFixed(1) + " KB",
-      preview: file.type.startsWith("image/")
-        ? URL.createObjectURL(file)
-        : null,
-    };
-
-    setFiles((prev) => ({ ...prev, [docId]: fileData }));
-  };
-
-  const removeFile = (docId: DocumentId) => {
-    const fileToRemove = files[docId];
-    if (fileToRemove?.preview) {
-      URL.revokeObjectURL(fileToRemove.preview);
-    }
-    setFiles((prev) => {
-      const updated = { ...prev };
-      delete updated[docId];
-      return updated;
-    });
-  };
-
-  const handleDrop = (
-    e: React.DragEvent<HTMLDivElement>,
-    docId: DocumentId
-  ) => {
-    e.preventDefault();
-    setDragOver(null);
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) handleFile(docId, droppedFile);
-  };
-
-  const handleDragOver = (
-    e: React.DragEvent<HTMLDivElement>,
-    docId: DocumentId
-  ) => {
-    e.preventDefault();
-    setDragOver(docId);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(null);
-  };
-
-  // Individual upload function for each document
-  const uploadDocument = async (
-    docId: DocumentId,
-    uploadedFile: UploadedFile
-  ) => {
-    setUploadingDocs((prev) => new Set([...prev, docId]));
-
-    try {
-      const formData = new FormData();
-      formData.append(docId, uploadedFile.file);
-
-      await axiosInstance.post(
-        `/background-varification/upload-required-documents/${rowAction?.row?.original?._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      toast.success(
-        `${
-          documents.find((doc) => doc.id === docId)?.label
-        } uploaded successfully!`
-      );
-    } catch (error) {
-      toast.error(
-        `Failed to upload ${documents.find((doc) => doc.id === docId)?.label}`
-      );
-      // Remove the file from state on error
-      removeFile(docId);
-    } finally {
-      setUploadingDocs((prev) => {
-        const updated = new Set(prev);
-        updated.delete(docId);
-        return updated;
-      });
-    }
-  };
-
-  const handleManualUpload = (docId: DocumentId) => {
-    const file = files[docId];
-    if (file) {
-      uploadDocument(docId, file);
-    }
-  };
 
   return (
     <AlertDialog

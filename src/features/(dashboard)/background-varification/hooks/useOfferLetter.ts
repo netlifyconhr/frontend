@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 export type Payment = {
   id: string;
@@ -9,7 +9,8 @@ export type Payment = {
 
 import { useDebounce } from "@/hooks/useDebounce";
 import axiosInstance from "@/lib/axios-instance";
-import type { DataTableRowAction, TMeta, TResponse } from "@/types";
+import type { DataTableRowAction, TResponse } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -22,7 +23,6 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { format, subMonths } from "date-fns";
-import { toast } from "sonner";
 import { BackgroundVarificationTableColumns } from "../components/ReleaseTableColumn";
 import { offerLetterStatus } from "../types";
 
@@ -57,38 +57,6 @@ export interface IOfferLetter {
   _id: string;
 }
 
-async function fetchSentEmails({
-  page = 1,
-  limit = 5,
-  searchTerm = "",
-  status = offerLetterStatus.ALL,
-  date,
-}: FetchSentEmailsParams): Promise<TResponse<IOfferLetter[]> | undefined> {
-  try {
-    const params: Record<string, string | number> = {
-      page,
-      limit,
-      ...(searchTerm && { searchTerm }),
-      // month,
-      // year,
-    };
-    if (status !== offerLetterStatus.ALL) {
-      params.status = status;
-    }
-    // if (date) {
-    //   params.month = date;
-    // }
-    const response = await axiosInstance.get<TResponse<IOfferLetter[]>>(
-      "/background-varification",
-      { params }
-    );
-    return response.data;
-  } catch (error: unknown) {
-    const errMsg =
-      error instanceof Error ? error.message : "Something went wrong!";
-    toast.error(errMsg);
-  }
-}
 
 export default function useOfferLetter() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -100,7 +68,6 @@ export default function useOfferLetter() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [pageSize, setPageSize] = useState(5);
 
-  const [sentEmails, setSentEmails] = useState<IOfferLetter[]>([]);
   const [selectedOffer, setSelectedOffer] = useState<IOfferLetter | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<offerLetterStatus>(
@@ -110,8 +77,6 @@ export default function useOfferLetter() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [meta, setMeta] = useState<TMeta>();
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -122,9 +87,28 @@ export default function useOfferLetter() {
     () => BackgroundVarificationTableColumns(setRowAction),
     []
   );
-
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  
+  const {data,isFetching:loading}=useQuery({
+    queryKey:['VFG_LIST',{ page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        searchTerm: debouncedSearchTerm,}],
+    queryFn: ()=>{
+      return axiosInstance.get<TResponse<IOfferLetter[]>>(
+      "/background-varification",
+      { params :{
+     page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+      ...(searchTerm && { searchTerm }),
+      // month,
+      // year,
+    }}
+    );
+    }
+  })
+const meta=data?.data?.meta;
   const table = useReactTable({
-    data: sentEmails ?? [],
+    data: data?.data?.data ?? [],
     columns,
     pageCount: Number(meta?.totalPage),
     manualPagination: true,
@@ -145,38 +129,10 @@ export default function useOfferLetter() {
       pagination,
     },
   });
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const selectedRows = table.getSelectedRowModel().rows;
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      const res = await fetchSentEmails({
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        searchTerm: debouncedSearchTerm,
-        status: statusFilter,
-        date,
-      });
-      if (res) {
-        if (res.data) {
-          setSentEmails(res.data);
-        }
-        if (res.meta && res.meta.totalPage) {
-          setMeta(res?.meta);
-        }
-      }
-      setLoading(false);
-    };
 
-    loadData();
-  }, [
-    pagination.pageIndex,
-    pagination.pageSize,
-    debouncedSearchTerm,
-    statusFilter,
-    date,
-  ]);
+ 
 
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const handleUploadSuccess = () => {
@@ -198,7 +154,6 @@ export default function useOfferLetter() {
     detailsOpen,
     selectedOffer,
     setPageSize,
-    sentEmails,
     rowAction,
     setRowAction,
   };

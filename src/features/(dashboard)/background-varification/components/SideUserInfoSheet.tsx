@@ -1,23 +1,82 @@
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
+import dummyuserImg from "@/assets/dummy-user.jpg";
+import { TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/layout/sidebartest/components/ui/badge";
+import { Tooltip } from "@radix-ui/react-tooltip";
 import {
-  Briefcase,
   Building,
-  Check,
-  GraduationCap,
+  Clock,
   Mail,
-  MapPin,
   Phone,
   ShieldAlert,
-  ShieldCheck,
-  User,
-  Users,
-  X,
+  ShieldCheck
 } from "lucide-react";
-import type { IOfferLetter } from "../types";
-import { Badge } from "@/layout/sidebartest/components/ui/badge";
-import dummyuserImg from "@/assets/dummy-user.jpg";
+import type { ReactNode } from "react";
+import type { BackgroundVarificationType, } from "../types";
 
+
+type StatusType = "Verified" | "Pending" | "Warning" | string;
+
+interface StatusBadgeProps {
+  label: string;
+  status: StatusType;
+  tooltipContent?: ReactNode;
+}
+
+const getStatusConfig = (status: StatusType) => {
+  if (!status || status === "Pending") {
+    return {
+      variant: "outline" as const,
+      icon: Clock,
+    };
+  }
+  
+  if (status === "Verified") {
+    return {
+      variant: "success" as const,
+      icon: ShieldCheck,
+    };
+  }
+  
+  // Warning or any other status
+  return {
+    variant: "destructive" as const,
+    icon: ShieldAlert,
+  };
+};
+
+
+export const StatusBadge = ({ 
+  label, 
+  status, 
+  tooltipContent 
+}: StatusBadgeProps) => {
+  const { variant, icon: Icon } = getStatusConfig(status);
+
+  const badge = (
+    <Badge variant={variant} className="flex gap-1 items-center">
+      {label} <Icon size={12} />
+    </Badge>
+  );
+
+  if (tooltipContent) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {badge}
+        </TooltipTrigger>
+        {tooltipContent && (
+          <TooltipContent>
+            {tooltipContent}
+          </TooltipContent>
+        )}
+      </Tooltip>
+    );
+  }
+
+  return badge;
+};
 export default function SideUserInfoSheet({
   open,
   handleChange,
@@ -25,7 +84,7 @@ export default function SideUserInfoSheet({
 }: {
   open: boolean;
   handleChange: VoidFunction;
-  userInfo: IOfferLetter;
+  userInfo: BackgroundVarificationType;
 }) {
   const employeeData = {
     name: userInfo?.employeeName,
@@ -69,20 +128,27 @@ export default function SideUserInfoSheet({
       location: "San Francisco Office",
     },
   };
+
+  console.log(employeeData,"employeeData")
   return (
     <Sheet open={open} onOpenChange={handleChange}>
       <SheetContent className="">
         <div className="grid flex-1 auto-rows-min gap-6 ">
           <div className="flex-col flex items-center justify-center  ">
             {/* Header Section */}
-            <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8 text-center relative">
+            <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-center relative">
               <img
                 src={employeeData.profileImage}
                 alt="Profile"
-                className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto mb-4 object-cover"
+                className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto  object-cover"
               />
-              <h1 className="text-2xl font-bold text-white mb-2">
-                {employeeData.name}
+              <h1 className="text-2xl font-bold text-white ">
+                {userInfo?.companyName||"Woodrock private limited"} 
+              </h1>
+               <h1 className="text-lg font-bold text-white ">
+                {employeeData.name} 
+                  <span className="text-white"> ({userInfo?.employeeGender})</span>
+                
               </h1>
               <p className="text-indigo-100 text-lg">{employeeData.position}</p>
               <div className="absolute top-4 left-4 bg-white/20 rounded-lg px-3 py-1">
@@ -92,20 +158,77 @@ export default function SideUserInfoSheet({
               </div>
             </div>
             <div className="flex flex-wrap gap-1 py-3">
-              <Badge variant="outline">Adhar</Badge>
-              <Badge variant="destructive" className="flex gap-1 items-center">
-                Pan
-                <X size={12} />
-              </Badge>
-              <Badge variant="success" className="flex gap-1 items-center">
-                Education <Check size={12} />
-              </Badge>
-              <Badge variant="outline">Experience</Badge>
+                       <StatusBadge 
+                       label="Pan" 
+                       status={userInfo?.panStatus}
+                       
+                       tooltipContent={`PAN Status: ${userInfo?.panStatus||'Pending'}`}
+                     />
+                     <StatusBadge 
+                       label="Education" 
+                       status={userInfo?.educationStatus}
+                        
+                       tooltipContent={`educationStatus Status: ${userInfo?.educationStatus||'Pending'}`}
+                     />
+                     <StatusBadge 
+                       label="Aadhar" 
+                       status={userInfo?.adharStatus}
+                        
+                       tooltipContent={`Aadhar Status: ${userInfo?.adharStatus||'Pending'}`}
+                     />
+                     <StatusBadge 
+                       label="Experience" 
+                       status={userInfo?.experienceStatus}
+                        
+                       tooltipContent={`Experience Status: ${userInfo?.experienceStatus||'Pending'}`}
+                     />
             </div>
             {/* Content Section */}
-            <div className="p-6 max-h-96 overflow-y-auto">
+            <div className=" max-h-96 overflow-y-auto space-y-4">
+               {/* Work Information */}
+              <div className="">
+                <div className="flex items-center mb-3">
+                  <Building className="w-5 h-5 text-indigo-600 mr-2" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Work Information
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500">Department:</span>
+                    <p className="font-medium">
+                                        {userInfo?.employeeDepartment}
+
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Designation:</span>
+                    <p className="font-medium">
+                     {userInfo?.employeeDesignation}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Join Date:</span>
+                    <p className="font-medium">
+                      {userInfo?.employeeDateOfJoin}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Branch:</span>
+                    <p className="font-medium">
+                    {userInfo?.companyBranch}
+                    </p>
+                  </div>
+                   <div>
+                    <span className="text-gray-500">Region:</span>
+                    <p className="font-medium">
+                    {userInfo?.companyRegion}
+                    </p>
+                  </div>
+                </div>
+              </div>
               {/* Personal Information */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <div className="flex items-center mb-3">
                   <User className="w-5 h-5 text-indigo-600 mr-2" />
                   <h3 className="text-lg font-semibold text-gray-800">
@@ -138,10 +261,10 @@ export default function SideUserInfoSheet({
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Contact Information */}
-              <div className="mb-6">
+              <div className="">
                 <div className="flex items-center mb-3">
                   <Phone className="w-5 h-5 text-indigo-600 mr-2" />
                   <h3 className="text-lg font-semibold text-gray-800">
@@ -157,25 +280,20 @@ export default function SideUserInfoSheet({
                   </div>
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 text-gray-400 mr-2" />
-                    <span>{employeeData.contactInfo.phone}</span>
+                    <span>{userInfo?.employeePhone||"N/A"}</span>
                   </div>
-                  <div className="flex items-center">
-                    <Phone className="w-4 h-4 text-red-400 mr-2" />
-                    <span>
-                      Emergency: {employeeData.contactInfo.emergencyContact}
-                    </span>
-                  </div>
-                  <div className="flex items-start">
+                
+                  {/* <div className="flex items-start">
                     <MapPin className="w-4 h-4 text-gray-400 mr-2 mt-0.5" />
                     <span className="leading-tight">
                       {employeeData.contactInfo.address}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
               {/* Education */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <div className="flex items-center mb-3">
                   <GraduationCap className="w-5 h-5 text-indigo-600 mr-2" />
                   <h3 className="text-lg font-semibold text-gray-800">
@@ -196,115 +314,9 @@ export default function SideUserInfoSheet({
                     Specialization: {employeeData.education.specialization}
                   </p>
                 </div>
-              </div>
+              </div> */}
 
-              {/* Experience */}
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <Briefcase className="w-5 h-5 text-indigo-600 mr-2" />
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Experience
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="text-gray-500">Total Experience:</span>
-                    <p className="font-medium">
-                      {employeeData.experience.totalYears}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Current Role:</span>
-                    <p className="font-medium">
-                      {employeeData.experience.currentRole}
-                    </p>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="text-gray-500">Previous Companies:</span>
-                    <p className="font-medium">
-                      {employeeData.experience.previousCompanies}
-                    </p>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="text-gray-500">Key Skills:</span>
-                    <p className="font-medium text-blue-600">
-                      {employeeData.experience.skills}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Family Information */}
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <Users className="w-5 h-5 text-indigo-600 mr-2" />
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Family Information
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="text-gray-500">Father's Name:</span>
-                    <p className="font-medium">
-                      {employeeData.familyInfo.fatherName}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Father's Contact:</span>
-                    <p className="font-medium">
-                      {employeeData.familyInfo.fatherContact}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Mother's Name:</span>
-                    <p className="font-medium">
-                      {employeeData.familyInfo.motherName}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Spouse Name:</span>
-                    <p className="font-medium">
-                      {employeeData.familyInfo.spouseName}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Work Information */}
-              <div className="mb-4">
-                <div className="flex items-center mb-3">
-                  <Building className="w-5 h-5 text-indigo-600 mr-2" />
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Work Information
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="text-gray-500">Department:</span>
-                    <p className="font-medium">
-                      {employeeData.workInfo.department}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Manager:</span>
-                    <p className="font-medium">
-                      {employeeData.workInfo.manager}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Join Date:</span>
-                    <p className="font-medium">
-                      {employeeData.workInfo.joinDate}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Location:</span>
-                    <p className="font-medium">
-                      {employeeData.workInfo.location}
-                    </p>
-                  </div>
-                </div>
-              </div>
+             
             </div>
           </div>
         </div>
