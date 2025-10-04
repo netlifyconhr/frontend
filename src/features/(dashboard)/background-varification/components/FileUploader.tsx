@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/axios-instance";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Image } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ const FileUploader = ({
   const [previewUrl, setPreviewUrl] = useState<null | string>(
     uploadedUrl ?? null
   );
-
+const queryClient=useQueryClient();
   const { mutate, isPending, isSuccess, reset } = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
@@ -43,6 +43,11 @@ const FileUploader = ({
     onSuccess: (data) => {
       setPreviewUrl(data?.data?.documents?.[fileName]);
       setSelectedFile(null);
+
+queryClient.invalidateQueries({
+   queryKey: ['VFG_LIST'], 
+      exact: false 
+});
     },
   });
 

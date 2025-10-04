@@ -53,3 +53,34 @@ export interface IOfferLetter {
   photo?: string;
   _id: string;
 }
+
+
+
+export interface BackgroundVarificationType {
+  employeeName: string;
+  employeeId: string;
+  employeeDesignation: string;
+  employeeDepartment: string;
+  employeeEmail: string;
+  companyName: string;
+  companyBranch: string;
+  _id: string;
+
+  pan: string;
+  aadharFront: string;
+  aadharBack: string;
+  experience: string;
+  education: string;
+  photo: string;
+  educationStatus: string;
+  experienceStatus:string;
+  panStatus: string;
+  adharStatus: string;
+  remarks: string;
+  employeePhone: string;
+  
+  employeeDateOfJoin: string;
+  companyRegion: string;
+  employeeGender:string
+
+}

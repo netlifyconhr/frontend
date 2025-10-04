@@ -6,7 +6,7 @@ import {
   ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
-import type { IOfferLetter } from "../types";
+import type { BackgroundVarificationType, IOfferLetter } from "../types";
 
 import {
   DropdownMenu,
@@ -31,7 +31,6 @@ type StatusType = "Verified" | "Pending" | "Warning" | string;
 interface StatusBadgeProps {
   label: string;
   status: StatusType;
-  showTooltip?: boolean;
   tooltipContent?: ReactNode;
 }
 
@@ -60,7 +59,6 @@ const getStatusConfig = (status: StatusType) => {
 export const StatusBadge = ({ 
   label, 
   status, 
-  showTooltip = false,
   tooltipContent 
 }: StatusBadgeProps) => {
   const { variant, icon: Icon } = getStatusConfig(status);
@@ -71,7 +69,7 @@ export const StatusBadge = ({
     </Badge>
   );
 
-  if (showTooltip) {
+  if (tooltipContent) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -90,9 +88,9 @@ export const StatusBadge = ({
 };
 export const BackgroundVarificationTableColumns = (
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<IOfferLetter> | null>
+    React.SetStateAction<DataTableRowAction<BackgroundVarificationType> | null>
   >
-): ColumnDef<IOfferLetter>[] => [
+): ColumnDef<BackgroundVarificationType>[] => [
   {
     accessorKey: "employeeName",
     header: "Name",
@@ -135,25 +133,25 @@ export const BackgroundVarificationTableColumns = (
           <StatusBadge 
           label="Pan" 
           status={row?.original?.panStatus}
-          showTooltip
+          
           tooltipContent={`PAN Status: ${row?.original?.panStatus||'Pending'}`}
         />
         <StatusBadge 
           label="Education" 
           status={row?.original?.educationStatus}
-           showTooltip
+           
           tooltipContent={`educationStatus Status: ${row?.original?.educationStatus||'Pending'}`}
         />
         <StatusBadge 
           label="Aadhar" 
           status={row?.original?.adharStatus}
-           showTooltip
+           
           tooltipContent={`Aadhar Status: ${row?.original?.adharStatus||'Pending'}`}
         />
         <StatusBadge 
           label="Experience" 
           status={row?.original?.experienceStatus}
-           showTooltip
+           
           tooltipContent={`Experience Status: ${row?.original?.experienceStatus||'Pending'}`}
         />
         </div>
