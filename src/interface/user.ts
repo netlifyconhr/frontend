@@ -2,6 +2,8 @@ export enum UserRole {
   ADMIN = "admin",
   SUPERADMIN = "superadmin",
   USER = "user",
+  VERIFIER = "verifier",
+
 }
 export interface IUser {
   //   _id: string;

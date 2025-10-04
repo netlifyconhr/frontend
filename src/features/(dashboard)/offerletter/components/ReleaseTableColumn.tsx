@@ -55,12 +55,12 @@ export const OfferLetterTableColumns: ColumnDef<IOfferLetter>[] = [
   },
 
   {
-    accessorKey: "employeeDepartment",
-    header: "Department",
-  },
-  {
     accessorKey: "employeeDesignation",
     header: "Designation",
+  },
+  {
+    accessorKey: "offerLetterDate",
+    header: "Joining Date",
   },
 ];
 export const ReleaseTableColumns = (

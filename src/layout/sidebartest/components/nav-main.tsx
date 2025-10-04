@@ -12,6 +12,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import type { UserRole } from "@/interface/user";
 import { cn } from "@/lib/utils";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner";
@@ -34,10 +36,11 @@ export function NavMain({
       title: string;
       url: string;
       isBlocked?: boolean;
-      roles?: Array<string>;
+      roles: UserRole[];
     }[];
   }[];
 }) {
+  const {user}=useAuth();
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="text-white">Platform</SidebarGroupLabel>
@@ -86,16 +89,19 @@ export function NavMain({
               {item.items?.length && (
                 <CollapsibleContent className="my-0.5">
                   <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title} className="my-1">
+                    {item.items?.map((subItem) => {
+                      const hasAcess= subItem?.roles && subItem?.roles.includes(user?.role as UserRole)
+                    const isBlock=subItem?.isBlocked || !hasAcess ;
+
+                      return  <SidebarMenuSubItem key={subItem.title} className="my-1">
                         <NavLink
-                          to={subItem?.isBlocked ? "#" : subItem.url}
+                          to={isBlock ? "#" : subItem.url}
                           end
                           onClick={(e) => {
-                            if (subItem?.isBlocked) {
+                            if (isBlock) {
                               e.preventDefault();
                               toast.error(
-                                "Module not purchased. Please contact system admin!"
+                               !subItem?.isBlocked?'You have not access. Please contact system admin!' :"Module not purchased. Please contact system admin!"
                               );
                             }
                           }}
@@ -104,14 +110,14 @@ export function NavMain({
                             <SidebarMenuSubButton
                               asChild
                               isActive={isActive}
-                              isBlocked={subItem?.isBlocked}
+                              isBlocked={isBlock}
                             >
                               <span>{subItem.title}</span>
                             </SidebarMenuSubButton>
                           )}
                         </NavLink>
                       </SidebarMenuSubItem>
-                    ))}
+                    })}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               )}
