@@ -1,8 +1,8 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import type { IOfferLetter } from "../types";
 import { AnimatedCheckbox } from "@/components/ui/AnimatedCheckbox";
 import { Button } from "@/components/ui/button";
+import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, EyeIcon, MoreHorizontal, Send } from "lucide-react";
+import type { IOfferLetter } from "../types";
 
 import {
   DropdownMenu,
@@ -55,12 +55,12 @@ export const OfferLetterTableColumns: ColumnDef<IOfferLetter>[] = [
   },
 
   {
-    accessorKey: "employeeDesignation",
-    header: "Designation",
+    accessorKey: "employeeDepartment",
+    header: "Department",
   },
   {
-    accessorKey: "offerLetterDate",
-    header: "Joining Date",
+    accessorKey: "employeeDesignation",
+    header: "Designation",
   },
 ];
 export const ReleaseTableColumns = (

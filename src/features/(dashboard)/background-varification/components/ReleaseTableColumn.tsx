@@ -6,7 +6,7 @@ import {
   ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
-import type { BackgroundVarificationType, IOfferLetter } from "../types";
+import type { BackgroundVarificationType } from "../types";
 
 import {
   DropdownMenu,
@@ -17,12 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Badge } from "@/layout/sidebartest/components/ui/badge";
-import { getStatusColor } from "@/lib/utils";
 import type { DataTableRowAction } from "@/types";
 
 
 
-import {  TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Clock } from "lucide-react";
 import { type ReactNode } from "react";
 
@@ -218,24 +217,15 @@ export const BackgroundVarificationImportColumns: ColumnDef<unknown>[] = [
     ),
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <span
-        className={`capitalize inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-          row.getValue("status")
-        )}`}
-      >
-        {row.getValue("status")}
-      </span>
-    ),
+    accessorKey: "companyName",
+    header: "Company",
+  },
+ {
+    accessorKey: "employeeDepartment",
+    header: "Department",
   },
   {
     accessorKey: "employeeDesignation",
     header: "Designation",
-  },
-  {
-    accessorKey: "offerLetterDate",
-    header: "Joining Date",
   },
 ];
