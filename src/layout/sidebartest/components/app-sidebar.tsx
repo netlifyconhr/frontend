@@ -25,23 +25,21 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { UserRole } from "@/interface/user";
 import { NavMain } from "../components/nav-main";
 import { TeamSwitcher } from "../components/team-switcher";
-import { UserRole } from "@/interface/user";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  
   navMain: [
     {
       url: "/dashboard",
       isBlocked: false,
       title: "Dashboard",
       icon: BarChart3,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
     },
     {
       url: "employees",
@@ -54,6 +52,8 @@ const data = {
           url: "all-employees",
           title: "All Employees",
           isBlocked: true,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
       ],
     },
@@ -68,18 +68,24 @@ const data = {
           isBlocked: true,
           title: "Salary Management",
           icon: DollarSign,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "/dashboard/payslips",
           isBlocked: false,
           title: "Payslips",
           icon: FileText,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "bonuses",
           isBlocked: true,
           title: "Bonuses",
           icon: Award,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
       ],
     },
@@ -92,49 +98,63 @@ const data = {
           title: "Background KYC Check",
           url: "/dashboard/background-check",
           icon: ShieldCheck,
-          roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER,UserRole.VERIFIER],
         },
         {
           url: "/dashboard/offer-letter",
           isBlocked: false,
           title: "Send Offer Letter",
           icon: Mail,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "warning-letter",
           isBlocked: true,
           title: "Warning Letter",
           icon: AlertCircle,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "/dashboard/experience-letter",
           isBlocked: false,
           title: "Experience Letter",
           icon: Award,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "/dashboard/relieving-letter",
           isBlocked: false,
           title: "Relieving Letter",
           icon: FileMinus,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "/dashboard/exam-form-management",
           isBlocked: true,
           title: "Manage Exam Forms",
           icon: FileSignature,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "onboarding-tracker",
           isBlocked: true,
           title: "Onboarding Tracker",
           icon: UserPlus,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
         {
           url: "exit-process",
           isBlocked: true,
           title: "Exit Process",
           icon: LogOut,
+          roles: [UserRole.SUPERADMIN, UserRole.ADMIN,UserRole.USER],
+
         },
       ],
     },
