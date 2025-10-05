@@ -1,6 +1,8 @@
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import dummyuserImg from "@/assets/dummy-user.jpg";
+import dummyFemaleuserImg from "@/assets/female_dummy.png";
+
 import { TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/layout/sidebartest/components/ui/badge";
 import { Tooltip } from "@radix-ui/react-tooltip";
@@ -129,7 +131,7 @@ export default function SideUserInfoSheet({
     },
   };
 
-  console.log(employeeData,"employeeData")
+  const profileImage=userInfo?.photo||(userInfo?.employeeGender==='Female' ? dummyFemaleuserImg: employeeData.profileImage);
   return (
     <Sheet open={open} onOpenChange={handleChange}>
       <SheetContent className="">
@@ -137,11 +139,13 @@ export default function SideUserInfoSheet({
           <div className="flex-col flex items-center justify-center  ">
             {/* Header Section */}
             <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-center relative">
+              <a href={profileImage} target="_blank" rel="noopener noreferrer">
               <img
-                src={employeeData.profileImage}
+                src={profileImage}
                 alt="Profile"
                 className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto  object-cover"
-              />
+                />
+                </a>
               <h1 className="text-2xl font-bold text-white ">
                 {userInfo?.companyName||"Woodrock private limited"} 
               </h1>
@@ -151,11 +155,7 @@ export default function SideUserInfoSheet({
                 
               </h1>
               <p className="text-indigo-100 text-lg">{employeeData.position}</p>
-              <div className="absolute top-4 left-4 bg-white/20 rounded-lg px-3 py-1">
-                <span className="text-white text-sm font-semibold">
-                  ID: {employeeData.personalInfo.employeeId}
-                </span>
-              </div>
+             
             </div>
             <div className="flex flex-wrap gap-1 py-3">
                        <StatusBadge 
