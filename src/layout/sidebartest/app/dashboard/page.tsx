@@ -6,11 +6,15 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
 import AuthUser from "@/features/dashboard/components/AuthUser";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { AppSidebar } from "../../components/app-sidebar";
 
 export default function SidebarPage() {
   const { user } = useAuth();
+  if(!user) {
+
+    return <Navigate to={'/login'} />
+  }
 
   return (
     <SidebarProvider>

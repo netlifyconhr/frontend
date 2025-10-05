@@ -109,7 +109,7 @@ export const BackgroundVarificationTableColumns = (
     header: "Employee Code",
   },
   {
-    accessorKey: "contactNumber",
+    accessorKey: "employeePhone",
     header: "Number",
   },
   {
