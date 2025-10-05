@@ -98,6 +98,13 @@ export default function UploadVerifyDocuments({
 
             <FileUploader
               userId={rowAction?.row?.original?._id as string}
+              fileName="photo"
+              key="photo"
+              title="Employee image"
+              uploadedUrl={rowAction?.row?.original?.photo}
+            />
+             <FileUploader
+              userId={rowAction?.row?.original?._id as string}
               fileName="pan"
               key="pan"
               title="PAN Card"
