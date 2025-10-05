@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/axios-instance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Image } from "lucide-react";
+import { FileArchive, Image } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -41,6 +41,7 @@ const queryClient=useQueryClient();
       );
     },
     onSuccess: (data) => {
+      toast.success("Document uploaded successfully!")
       setPreviewUrl(data?.data?.documents?.[fileName]);
       setSelectedFile(null);
 
@@ -56,15 +57,9 @@ queryClient.invalidateQueries({
 
     if (!file) return;
 
-    const isValidType = ["image/png", "image/jpeg"].includes(file.type);
     const isValidSize = file.size <= MAX_FILE_SIZE;
 
-    if (!isValidType) {
-      toast.error("Only PNG or JPG files are allowed.");
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      return;
-    }
+   
 
     if (!isValidSize) {
       toast.error("File size must be less than or equal to 1MB.");
@@ -85,48 +80,75 @@ queryClient.invalidateQueries({
 
     mutate(selectedFile);
   };
-
-  const handleReupload = () => {
+  const handleReupload =async () => {
     setSelectedFile(null);
-    setPreviewUrl(null);
+
+    if(previewUrl && !previewUrl.includes("blob:")){
+
+await   axiosInstance.delete(
+        `/background-varification/upload-required-documents/${userId}`,
+        {data:{[fileName]:"",test:true}}
+       
+      );
+      
+queryClient.invalidateQueries({
+   queryKey: ['VFG_LIST'], 
+      exact: false 
+});
+    }
+      setPreviewUrl(null);
+
     reset();
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+      toast.success("Document deleted successfully!")
+
   };
 
   return (
     <div className="w-full mx-auto  p-3 border border-gray-200 rounded-md shadow-sm bg-white">
       <div className="flex flex-col gap-4">
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          onChange={handleFileChange}
-          // onChange={e=>e.target.value}
-          ref={fileInputRef}
-          className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0 file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100
-              cursor-pointer"
-          hidden
-        />
+       <input
+  type="file"
+  accept="image/png, image/jpeg, application/pdf"
+  onChange={handleFileChange}
+  ref={fileInputRef}
+  className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+      file:rounded-md file:border-0 file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100
+      cursor-pointer"
+  hidden
+/>
 
-        <div className="flex items-center justify-between gap-x-4">
-          <div
-            className="flex gap-3 items-center"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {previewUrl ? (
-              <img
-                src={previewUrl}
-                alt="Selected preview"
-                className="h-[40px] w-auto object-cover rounded border"
-              />
-            ) : (
-              <div className={"p-2 rounded-lg bg-green-100"}>
-                <Image />
-              </div>
-            )}
+<div className="flex items-center justify-between gap-x-4">
+  <div className="flex gap-3 items-center" onClick={() => fileInputRef.current?.click()}>
+    {previewUrl ? (
+      // Check if it's an image (either data:image or a direct image URL)
+      previewUrl.includes('data:image') || previewUrl.includes('.png') || previewUrl.includes('.jpeg') || previewUrl.includes('.jpg') ? (
+        <img
+          src={previewUrl}
+          alt="Selected preview"
+          className="h-[40px] w-auto object-cover rounded border"
+        />
+      ) 
+      // Check if it's a PDF (URL includes .pdf)
+      : previewUrl.includes('.pdf') ? (
+        <div className="flex items-center space-x-2">
+          <FileArchive  /> {/* File icon for PDFs */}
+        </div>
+      ) 
+      // Handle other non-image files (e.g., Word, Excel)
+      : (
+        <div className="flex items-center space-x-2">
+          <FileArchive  /> 
+        </div>
+      )
+    ) : (
+      <div className={"p-2 rounded-lg bg-green-100"}>
+        <Image /> {/* Placeholder when no file is selected */}
+      </div>
+    )}
             <div className="">
               <p className="text-sm text-gray-600 truncate max-w-[200px]">
                 {title}
@@ -137,7 +159,7 @@ queryClient.invalidateQueries({
             </div>
           </div>
           <div className="flex gap-2 items-center">
-            {(isSuccess || selectedFile) && (
+            {previewUrl&& (
               <Button
                 disabled={isPending}
                 onClick={handleReupload}

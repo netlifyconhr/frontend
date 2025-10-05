@@ -65,7 +65,8 @@ export interface BackgroundVarificationType {
   companyName: string;
   companyBranch: string;
   _id: string;
-
+criminalStatus:string;
+addressStatus:string;
   pan: string;
   aadharFront: string;
   aadharBack: string;

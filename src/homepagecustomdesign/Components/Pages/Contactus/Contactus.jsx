@@ -1,6 +1,6 @@
-import React from "react";
-import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
+import ContactForm from "./ContactForm";
 const Contactus = () => {
   
   
@@ -47,38 +47,7 @@ const Contactus = () => {
         {/* Right Form Block */}
         <div className="bg-white rounded-xl mt-2 mb-10 ml-20 w-100 shadow-md p-4">
           <h3 className="text-2xl font-bold mb-6 text-[#0f172a]">Send us a Message</h3>
-          <form className="space-y-5">
-            <div>
-              <label className="block mb-1 font-medium">Full Name*</label>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block mb-1 font-medium">Email Address*</label>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block mb-1 font-medium">Message*</label>
-              <textarea
-                rows="4"
-                placeholder="Type your message"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-full transition duration-300"
-            >
-              Send Message
-            </button>
-          </form>
+          <ContactForm />
         </div>
       </div>
     </section>

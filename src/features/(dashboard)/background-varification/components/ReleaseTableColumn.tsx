@@ -153,6 +153,18 @@ export const BackgroundVarificationTableColumns = (
            
           tooltipContent={`Experience Status: ${row?.original?.experienceStatus||'Pending'}`}
         />
+         <StatusBadge 
+          label="Criminal Record" 
+          status={row?.original?.criminalStatus}
+           
+          tooltipContent={`Criminal Record Status: ${row?.original?.criminalStatus||'Pending'}`}
+        />
+        <StatusBadge 
+          label="Address" 
+          status={row?.original?.addressStatus}
+           
+          tooltipContent={`Address Status: ${row?.original?.addressStatus||'Pending'}`}
+        />
         </div>
       </>
   },
