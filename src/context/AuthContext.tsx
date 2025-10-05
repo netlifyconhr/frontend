@@ -1,10 +1,12 @@
 // context/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState } from "react";
-import type { IUser } from "@/interface/user";
 import { tokenKey } from "@/constant/api";
+import type { IUser } from "@/interface/user";
 import axiosInstance, {
   type CustomAxiosRequestConfig,
 } from "@/lib/axios-instance";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import logo from "../assets/OnlyNicon.png";
+
 type AuthContextType = {
   user: IUser | null;
   login: (payload: { email: string; password: string }) => Promise<void>;
@@ -70,7 +72,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     loading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{loading?<div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+      <div className="animate-pulse">
+        <img className="w-24 h-24" src={logo} alt="Logo" />
+      </div>
+    </div>  :children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
