@@ -8,7 +8,7 @@ export const VARIFICATION_EMPLYEES = [
     "companyName": "WOODROCK SOFTONIC PVT LTD",
     "employeeDepartment": "Engineering",
     "employeeDesignation": "Software Engineer",
-    "companyBranch": "Soltlake",
+    "companyBranch": "Saltlake",
     "companyRegion": "Kolkata",
     "employeeGender": "Female"
   },
@@ -21,7 +21,7 @@ export const VARIFICATION_EMPLYEES = [
     "companyName": "WOODROCK SOFTONIC PVT LTD",
     "employeeDepartment": "Human Resources",
     "employeeDesignation": "HR Manager",
-    "companyBranch": "Soltlake",
+    "companyBranch": "Saltlake",
     "companyRegion": "Kolkata",
     "employeeGender": "Male"
   },
@@ -34,7 +34,7 @@ export const VARIFICATION_EMPLYEES = [
     "companyName": "WOODROCK SOFTONIC PVT LTD",
     "employeeDepartment": "Marketing",
     "employeeDesignation": "Marketing Specialist",
-    "companyBranch": "Soltlake",
+    "companyBranch": "Saltlake",
     "companyRegion": "Kolkata",
     "employeeGender": "Female"
   }
