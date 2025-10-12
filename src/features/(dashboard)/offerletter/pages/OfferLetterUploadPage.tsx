@@ -59,6 +59,8 @@ const ExcelUploadWizard: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [showResults, setShowResults] = useState<boolean>(false);
+    const [isCompleted, setisCompleted] = useState<boolean>(false);
+  
   const [processedSuccess, setProcessedSuccess] = useState<UserData[]>([]);
   const [processedFailed, setProcessedFailed] = useState<
     Array<{ row: number; data: Partial<UserData>; error: string }>
@@ -96,7 +98,11 @@ const ExcelUploadWizard: React.FC = () => {
         console.log(error,"ghfhgfhfhfhkf")
         if (Number(response?.data?.data?.length) >= parsedData?.length ||error) {
           clearInterval(intervalId);
-          location.href = "/dashboard/offer-letter";
+          // location.href = "/dashboard/offer-letter";
+        clickTimeRef.current=null;
+
+        setisCompleted(true)
+
         }
 
         const sentData = response?.data?.data?.reduce(
@@ -552,8 +558,9 @@ badRequesterror=true;
               </h2>
 
               {isUploading && (
+
                 <div className="mb-8">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                { !isCompleted ? <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
                     <div className="flex items-center mb-4">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
                       <h3 className="text-lg font-semibold text-blue-800">
@@ -577,7 +584,13 @@ badRequesterror=true;
                     <p className="text-blue-600 text-sm">
                       {getProgressMessage()}
                     </p>
-                  </div>
+                  </div>: 
+                     <div className="flex items-center mb-4">
+          <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+          <h3 className="text-lg font-semibold text-green-800">
+            Successfully Uploaded data
+          </h3>
+        </div>}
 
                   {/* Live Processing Results */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
