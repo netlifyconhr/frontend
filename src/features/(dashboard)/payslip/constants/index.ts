@@ -14,6 +14,8 @@ export const PAYSLIP_LETTER_EMPLYEES = [
     totalWorkingDays: 30,
     totalPresentDays: 28,
     totalAbsent: 2,
+    OT:12,
+    incentives:123,
     uninformedLeaves: 0,
     halfDay: 1,
     calculatedSalary: 55000,
@@ -42,6 +44,8 @@ export const PAYSLIP_LETTER_EMPLYEES = [
     calculatedSalary: 77000,
     month: "January",
 
+    OT:12,
+    incentives:123,
     year: 2025,
     professionalTax: 1000,
     totalDeductions: 4000,
@@ -68,6 +72,8 @@ export const PAYSLIP_LETTER_EMPLYEES = [
     calculatedSalary: 42000,
     month: "January",
 
+    OT:12,
+    incentives:123,
     year: 2025,
     professionalTax: 1000,
     totalDeductions: 4000,

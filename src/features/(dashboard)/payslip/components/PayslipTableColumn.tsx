@@ -1,8 +1,7 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import type { IOfferLetter } from "../types";
-import { AnimatedCheckbox } from "@/components/ui/AnimatedCheckbox";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, EyeIcon, MoreHorizontal, Send, Trash2Icon } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, EyeIcon, MoreHorizontal, Trash2Icon } from "lucide-react";
+import type { IOfferLetter } from "../types";
 
 import {
   DropdownMenu,
@@ -77,23 +76,23 @@ export const PayslipTableColumns = (
   },
 ];
 export const PayslipUploadTableColumns : ColumnDef<IOfferLetter>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <AnimatedCheckbox
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-      />
-    ),
-    cell: ({ row }) => (
-      <AnimatedCheckbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <AnimatedCheckbox
+  //       checked={table.getIsAllRowsSelected()}
+  //       onChange={table.getToggleAllRowsSelectedHandler()}
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <AnimatedCheckbox
+  //       checked={row.getIsSelected()}
+  //       onChange={row.getToggleSelectedHandler()}
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "employeeName",
     header: ({ column }) => (
