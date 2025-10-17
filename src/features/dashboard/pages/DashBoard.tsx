@@ -1,18 +1,19 @@
 import {
-  Award,
   BarChart3,
   Calendar,
-  Clock,
   DollarSign,
+  LifeBuoy,
+  Mail,
+  Phone,
   UserCheck,
   UserPlus,
-  Users,
+  Users
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import dayjs from 'dayjs'; // if not using dayjs, you can use native Date methods
 import axiosInstance from "@/lib/axios-instance";
+import dayjs from 'dayjs'; // if not using dayjs, you can use native Date methods
 type StatCardProps = {
   title: string;
   value: number;
@@ -218,49 +219,44 @@ useEffect(() => {
         {/* Recent Activities */}
         <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Recent Activities
+       Need Help?
           </h3>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-red-50 to-blue-50 rounded-lg">
-              <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-blue-500 rounded-full flex items-center justify-center">
-                <UserPlus className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  New employee onboarded
-                </p>
-                <p className="text-xs text-gray-600">
-                  Sarah Johnson joined Marketing team
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
-              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                <Clock className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  Leave request approved
-                </p>
-                <p className="text-xs text-gray-600">
-                  Mike Davis - Vacation (Dec 20-25)
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                <Award className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  Performance review completed
-                </p>
-                <p className="text-xs text-gray-600">
-                  Q4 reviews for Engineering team
-                </p>
-              </div>
-            </div>
-          </div>
+       <div className="flex items-start space-x-4 mb-6">
+    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full shadow-md">
+      <LifeBuoy className="w-6 h-6 text-white" />
+    </div>
+    <div>
+      <h3 className="text-lg font-semibold text-gray-800 mb-1">
+        Need Technical Help?
+      </h3>
+      <p className="text-sm text-gray-600">
+        Having trouble with file uploads, employee records, or dashboard access?  
+        Reach out to our support team or raise a complaint directly below.
+      </p>
+    </div>
+  </div>
+
+  {/* Support Buttons */}
+  <div className="flex flex-col sm:flex-row gap-3 mb-8">
+    <a
+      href="mailto:admin@netlifycon-hr.in"
+      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm rounded-lg font-medium hover:from-blue-600 hover:to-indigo-600 transition-all shadow-md flex items-center justify-center gap-2"
+    >
+      <Mail className="w-4 h-4" />
+      Email Support
+    </a>
+
+    <a
+      href="https://wa.me/918420377092"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm rounded-lg font-medium hover:from-green-600 hover:to-emerald-700 transition-all shadow-md flex items-center justify-center gap-2"
+    >
+      <Phone className="w-4 h-4" />
+      Chat on WhatsApp
+    </a>
+  </div>
+
         </div>
 
         {/* Quick Actions */}
