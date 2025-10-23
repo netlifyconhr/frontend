@@ -24,7 +24,7 @@ import {
 } from "@tanstack/react-table";
 import { format, subMonths } from "date-fns";
 import { BackgroundVarificationTableColumns } from "../components/ReleaseTableColumn";
-import { offerLetterStatus } from "../types";
+import { offerLetterStatus, type BackgroundVarificationType } from "../types";
 
 type FetchSentEmailsParams = {
   page?: number;
@@ -34,28 +34,6 @@ type FetchSentEmailsParams = {
   date?: string;
 };
 
-export interface IOfferLetter {
-  employeeName: string;
-  employeeEmail: string;
-  employeeAddress: string;
-  employeeDesignation: string;
-  employeeDateOfJoin: string;
-  employeeCtc: string;
-  companyLogo: string;
-  companyName: string;
-  companyAddress: string;
-  offerLetterDate: string;
-  companyContactName: string;
-  companyPersonTitle: string;
-  companyContactNumber: string;
-  companyPersonalEmail: string;
-  emailSubject: string;
-  emailMessage: string;
-  status: offerLetterStatus;
-  generateByUser: string;
-  createdAt: string;
-  _id: string;
-}
 
 
 export default function useOfferLetter() {
@@ -64,14 +42,14 @@ export default function useOfferLetter() {
     format(subMonths(new Date(), 1), "MMMM").toLowerCase()
   );
   const [rowAction, setRowAction] =
-    useState<DataTableRowAction<IOfferLetter> | null>(null);
+    useState<DataTableRowAction<BackgroundVarificationType> | null>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [pageSize, setPageSize] = useState(5);
 
-  const [selectedOffer, setSelectedOffer] = useState<IOfferLetter | null>(null);
+  const [selectedOffer, setSelectedOffer] = useState<BackgroundVarificationType | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<offerLetterStatus>(
-    offerLetterStatus.ALL
+  const [statusFilter, setStatusFilter] = useState(
+    "all"
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -92,14 +70,16 @@ export default function useOfferLetter() {
   const {data,isFetching:loading}=useQuery({
     queryKey:['VFG_LIST',{ page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        searchTerm: debouncedSearchTerm,}],
+        searchTerm: debouncedSearchTerm,statusFilter}],
     queryFn: ()=>{
-      return axiosInstance.get<TResponse<IOfferLetter[]>>(
+      return axiosInstance.get<TResponse<BackgroundVarificationType[]>>(
       "/background-varification",
       { params :{
      page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
+      ...(statusFilter!=='all' && { verificationStatus:statusFilter }),
       ...(searchTerm && { searchTerm }),
+
       // month,
       // year,
     }}

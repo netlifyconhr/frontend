@@ -83,5 +83,6 @@ addressStatus:string;
   employeeDateOfJoin: string;
   companyRegion: string;
   employeeGender:string
+  verificationStatus:"completed"|'pending'
 
 }

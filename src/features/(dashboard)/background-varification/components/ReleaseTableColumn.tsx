@@ -22,6 +22,7 @@ import type { DataTableRowAction } from "@/types";
 
 
 import { TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { Clock } from "lucide-react";
 import { type ReactNode } from "react";
 
@@ -120,6 +121,13 @@ export const BackgroundVarificationTableColumns = (
     accessorKey: "remarks",
     header: "Remarks",
     // cell: () => <p className="text-green-700">Good</p>,
+  },
+  {
+    accessorKey: "verificationStatus",
+    header: "Verification Status",
+    cell: ({row}) => <p className={cn("text-red-500",{
+      "text-green-700":row?.original?.verificationStatus==='completed'
+    })}>{row?.original?.verificationStatus==='completed'?'Completed':'Pending'}</p>,
   },
   {
     accessorKey: "status",

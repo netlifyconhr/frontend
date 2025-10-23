@@ -7,12 +7,12 @@ const BackgroundVarificationHeader = () => {
   return (
     <div className="md:mb-8 mb-2 flex justify-between flex-col md:flex-row">
       <div className="">
-        <Heading>Background Varification</Heading>
+        <Heading>Background Verification</Heading>
       </div>
       <div className="">
         <button
           onClick={() =>
-            handleSampleDownload(VARIFICATION_EMPLYEES, "sample_background_varification")
+            handleSampleDownload(VARIFICATION_EMPLYEES, "sample_background_verification")
           }
           className="px-4 cursor-pointer py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105 flex items-center gap-2 w-full md:text-sm text-xs"
         >

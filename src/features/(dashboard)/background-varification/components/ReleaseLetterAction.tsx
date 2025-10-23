@@ -11,7 +11,6 @@ import { handleSampleDownload } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useReleaseLetterContext } from "../context";
 import { offerLetterStatus } from "../types";
-import { MONTH_LIST } from "@/constant/common";
 export default function ReleaseLetterAction() {
   const {
     searchTerm,
@@ -78,10 +77,10 @@ export default function ReleaseLetterAction() {
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={offerLetterStatus.ALL}>All</SelectItem>
-                <SelectItem value={offerLetterStatus.SENT}>Sent</SelectItem>
-                <SelectItem value={offerLetterStatus.DRAFT}>Draft</SelectItem>
-                <SelectItem value={offerLetterStatus.FAILED}>Failed</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">Verification Pending</SelectItem>
+
+                <SelectItem value="completed">Verification Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>
