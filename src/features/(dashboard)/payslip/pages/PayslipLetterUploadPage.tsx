@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 import * as XLSX from "xlsx";
+import { z } from "zod";
 
 import UploadError from "@/components/UploadError";
 import type { TResponse } from "@/types";
@@ -25,6 +26,56 @@ import { formatISO } from "date-fns";
 import { toast } from "sonner";
 import { PayslipUploadTableColumns } from "../components/PayslipTableColumn";
 import { offerLetterStatus, type IOfferLetter } from "../types";
+
+
+enum IEmailStatus {
+  DRAFT = "draft",
+  SENT = "send",
+  FAILED = "failed",
+}
+
+const paySlipSchema = z.object({
+  employeeName: z.string().nonempty(),
+  employeeId: z.string().optional(),
+  month: z.string().optional(),
+  year: z.string().optional(),
+
+  employeeDesignation: z.string().optional(),
+  employeeDepartment: z.string().optional(),
+
+  employeeUAN: z.string().optional(),
+  employeeESINO: z.string().optional(),
+
+  basicSalary: z.string().optional(),
+  houseRentAllowance: z.string().optional(),
+  conveyanceAllowance: z.string().optional(),
+  training: z.string().optional(),
+  grossSalary: z.string().optional(),
+  netPay: z.string().optional(),
+  salaryOfEmployee: z.string().optional(),
+  totalWorkingDays: z.string().optional(),
+  totalPresentDays: z.string().optional(),
+  totalAbsent: z.string().optional(),
+  uninformedLeaves: z.string().optional(),
+  halfDay: z.string().optional(),
+  calculatedSalary: z.string().optional(),
+
+  EPF: z.string().optional(),
+  ESI: z.string().optional(),
+  incentives: z.string().optional(),
+  OT: z.string().optional(),
+  professionalTax: z.string().optional(),
+  totalDeductions: z.string().optional(),
+
+  employeeEmail: z.string().nonempty(),
+  companyName: z.string().optional(),
+  dateOfPayment: z.string().optional(), // or z.coerce.date()
+
+  generateByUser: z.string().optional(), // You can validate ObjectId separately if needed
+
+  status: z.nativeEnum(IEmailStatus).optional(),
+});
+ type PaySlipInput = z.infer<typeof paySlipSchema>;
 
 interface UserData {
   id: string;
@@ -216,7 +267,31 @@ const PayslipLetterUploadPage: React.FC = () => {
               raw: false,
             });
 
-            setParsedData(rows);
+
+
+
+            
+
+            
+
+
+// Validate and filter valid rows
+const validPaySlips: PaySlipInput[] = [];
+
+for (const row of rows) {
+  const result = paySlipSchema.safeParse(row);
+  if (result.success) {
+    validPaySlips.push(result.data);
+  } else {
+    console.warn("Invalid row skipped:", result.error.flatten().fieldErrors);
+  }
+}
+
+
+            setParsedData(validPaySlips);
+
+
+
           };
 
           reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
