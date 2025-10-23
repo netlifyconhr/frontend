@@ -25,3 +25,4 @@ const BackgroundVarificationHeader = () => {
 };
 
 export default BackgroundVarificationHeader;
+

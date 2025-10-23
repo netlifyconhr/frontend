@@ -24,15 +24,7 @@ import {
 } from "@tanstack/react-table";
 import { format, subMonths } from "date-fns";
 import { BackgroundVarificationTableColumns } from "../components/ReleaseTableColumn";
-import { offerLetterStatus, type BackgroundVarificationType } from "../types";
-
-type FetchSentEmailsParams = {
-  page?: number;
-  limit?: number;
-  searchTerm?: string;
-  status: offerLetterStatus;
-  date?: string;
-};
+import { type BackgroundVarificationType } from "../types";
 
 
 
@@ -136,5 +128,6 @@ const meta=data?.data?.meta;
     setPageSize,
     rowAction,
     setRowAction,
+    data
   };
 }
